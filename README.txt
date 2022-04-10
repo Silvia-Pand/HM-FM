@@ -1,5 +1,7 @@
 This repository contains the R functions used for the paper
-"ON A CLASS OF FINITE MIXTURE MODELS THAT INCLUDES HIDDENMARKOV MODELS FOR LONGITUDINAL DATA AND RELATEDMISSPECIFICATION TESTS" by
+"ON A CLASS OF FINITE MIXTURE MODELS THAT INCLUDES HIDDEN
+MARKOV MODELS FOR LONGITUDINAL DATA AND RELATED
+MISSPECIFICATION TESTS" by
 - F.Bartolucci (University of Perugia, IT)
 - S.Pandolfi (University of Perugia, IT)  
 - F. Pennoni (University of Milano-Bicocca, IT)
@@ -11,3 +13,5 @@ HM_FM_Test.R ---> perform the misspecification tests for hidden Markov model, al
 exampleTest.R ---> example file that loads the workspace file "exampleData.RData" and shows how to perform the misspecification tests
 
 exampleData.RData ---> workspace file containing a simulated dataset 
+
+sqg.R ---> internal function that creates a matrix with all possible combinations of sequence of number given in input 
