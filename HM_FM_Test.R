@@ -18,17 +18,15 @@ HM_FM_Test <- function(data=data,id = "id",time="time",lv=2:4,responses=NULL,typ
 #bicHM   = value of BIC index for the HM model for each l in lv
 #n       = sample size
 #TT      = number of time occasions
-#pvalueS = pvalue of the standard LR test for each l in lv (if type="single")   
-#pvalueT = overall pvalue of the multiple LR test for each l in lv (if type="triplets")
+#pvalue  = pvalue of the standard LR test for each l in lv (if type="single")   
+#or overall pvalue of the multiple LR test for each l in lv (if type="triplets")
 
 # ---- preliminaries ----
   type <- match.arg(type, choices = eval(formals(HM_FM_Test)$type))
   if(is.null(responses)) responses = colnames(data[,3:dim(data)[2]])
   responsesFormula <- lmestFormula(data=data,response=responses)$responsesFormula
  
-  aicHM <-bicHM <- lkHM <- rep(NA,max(lv))
-  if(type=="single") pvalueS <- rep(NA,max(lv))
-  else if(type=="triplets") pvalueT <-rep(NA,max(lv))
+  aicHM <-bicHM <- lkHM <- pvalue <- rep(NA,max(lv))
   out <-long2matrices(id=data[,names(data)==id],time =data[,names(data)==time],Y =data[,names(data)%in%responses])
   n <- dim(out$YY)[1]
   TT <- dim(out$YY)[2]
@@ -59,7 +57,7 @@ HM_FM_Test <- function(data=data,id = "id",time="time",lv=2:4,responses=NULL,typ
         estFM <- estFM2(aperm(YY,c(1,3,2)),l=l, Mu=t(estHM$Mu),Si=estHM$Si,piv0=estHM$piv,Pi0=estHM$Pi)
         lkFM <- estFM$lk
         Dev1 <- -2*(lkHM[l] - lkFM)
-        pvalueS[l] <- 1-pchisq(Dev1,l^TT-l^2)   
+        pvalue[l] <- 1-pchisq(Dev1,l^TT-l^2)   
         
       }else if(type=="triplets"){
         print("perform the multiple LR test")
@@ -84,7 +82,7 @@ HM_FM_Test <- function(data=data,id = "id",time="time",lv=2:4,responses=NULL,typ
           }
           devc = 2*(lkFMc-lkHMc)
           pvc = 1-pchisq(devc,l^3-l^2)
-          pvalueT[l] = min(1,min(pvc)*(TT-2))
+          pvalue[l] = min(1,min(pvc)*(TT-2))
         }
           
       }
@@ -92,17 +90,9 @@ HM_FM_Test <- function(data=data,id = "id",time="time",lv=2:4,responses=NULL,typ
   }
 
 # ---- output ---
-  out=list(lkHM=lkHM,aicHM=aicHM,bicHM=bicHM,n=n,TT=TT)
-  if(type=="single"){
-    pp = pvalueS[lv]
-    names(pp)=lv
-    out$pvalueS=pp 
-  }
-  else if(type=="triplets"){
-    pp = pvalueT[lv]
-    names(pp)=lv
-    out$pvalueT=pp 
-  }
+  pp = pvalue[lv]
+  names(pp)=lv
+  out=list(lkHM=lkHM,aicHM=aicHM,bicHM=bicHM,n=n,TT=TT,pvalue=pp)
   return(out)
 
 }
